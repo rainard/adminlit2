@@ -1,0 +1,35 @@
+{% load static %}
+<script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="{% static 'plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'plugins/jquery.bootstrap/js/jquery.bootstrap.js' %}"></script>
+<!-- FastClick -->
+<script src="{% static 'plugins/fastclick/lib/fastclick.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'adminlte/js/adminlte.min.js' %}"></script>
+<script src="{% static 'plugins/pace/pace.min.js' %}"></script>
+<!-- SlimScroll -->
+<script src="{% static 'plugins/jquery-slimscroll/jquery.slimscroll.min.js' %}"></script>
+<!-- FastClick -->
+<script src="{% static 'plugins/fastclick/lib/fastclick.js' %}"></script>
+<!-- Sparkline -->
+<script src="{% static 'plugins/jquery-sparkline/jquery.sparkline.min.js' %}"></script>
+<!-- SlimScroll -->
+<script src="{% static 'plugins/jquery-slimscroll/jquery.slimscroll.min.js' %}"></script>
+<script src="{% static 'plugins/iCheck/icheck.min.js' %}"></script>
+<script src="{% static 'plugins/select2/select2.full.min.js' %}"></script>
+<script src="{% static 'plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js' %}"></script>
+<script src="{% static 'plugins/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js' %}"></script>
+<!-- DataTables -->
+<script src="{% static 'plugins/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'plugins/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+<script src="{% static 'plugins/jquery.blockUI/jquery.blockUI.min.js' %}"></script>
+<script src="{% static 'plugins/jquery-nice-select/js/jquery.nice-select.min.js' %}"></script>
+<script src="{% static 'plugins/chosen/chosen.jquery.min.js' %}"></script>
+<script src="{% static 'plugins/chosen/chosen.proto.min.js' %}"></script>
+<script type="text/javascript">
+    {% if msg %}
+        $.messager.popup("{{ msg|safe }}");
+    {% endif %}
+
+</script>

@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    {% include 'base/base_css.html' %}
+    <link rel="stylesheet" href="{% static 'base/css/login.css' %}">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="wrap">
+                <p class="form-title">
+                    欢迎登录</p>
+                <form class="login" method="POST" action="{% url 'auth_login_action' %}">
+                    {% csrf_token %}
+                    {{ form.username }}
+                    {{ form.password }}
+                    <input type="submit" value="LogIn" class="btn btn-success btn-sm"/>
+                    <div class="remember-forgot">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="checkbox">
+                                    <label>
+                                        {{ form.remember }}
+                                        保持登录
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'base/base_js.html' %}
+<script type="text/javascript">
+    $(document).ready(function () {
+        {% if msg %}
+            $.messager.popup("{{ msg|safe }}");
+        {% endif %}
+
+        //Flat red color scheme for iCheck
+        $('input[type="checkbox"]').iCheck({
+            checkboxClass: 'icheckbox_flat-green',
+            radioClass: 'icheckbox_flat-red'
+        });
+
+    });
+</script>
+</body>
+</html>

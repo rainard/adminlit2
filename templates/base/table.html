@@ -1,0 +1,326 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{{ table.title }}</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Tell the browser to be responsive to screen width -->
+
+        {% include 'base/base_css.html' %}
+
+    <style>
+        .table-center-text {
+            text-align: center
+        }
+
+        .table-th {
+            background-color: #6168BD;
+            color: #FFFFFF;
+
+        }
+    </style>
+
+    {% block extend-css-block %}
+    {% endblock %}
+</head>
+<body class="hold-transition skin-black-light sidebar-mini">
+
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content">
+
+    <section class="content-header">
+        <h1> {{ table.page_title |safe }}
+            <small>.</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+            <li class="active">{{ table.page_title |safe }} .</li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        {% block new_row_header %}
+        {% endblock %}
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">{{ table.title }}</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <div class="menu_btn_tools">
+                            {% block table-button-base-show %}
+                                <button id="copybtn" class="btn btn-info  "><i class="fa fa-copy">复制</i></button>
+                                <button id="addbtn" class="btn btn-info  "><i class="fa fa-remove">添加</i></button>
+                                <button id="editbtn" class="btn btn-warning "><i class="fa fa-edit">编辑</i></button>
+                                <button id="delbtn" class="btn btn-danger  "><i class="fa fa-remove">删除</i></button>
+                            {% endblock %}
+                            {% block table-button-extends %}
+                                <!--更多的 按钮实现写这里 -->
+                            {% endblock %}
+                        </div>
+                        <table id="objTable" class="table table-bordered table-hover table-center-text cell-borde"
+                               cellspacing="0">
+                            <thead>
+                            <tr class="table-th">
+                                {% block thead %}
+                                    {% for header in table.headers %}
+                                        <th class="table-center-text">{{ header }}</th>
+                                    {% endfor %}
+                                {% endblock %}
+                            </tr>
+                            </thead>
+
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                <!-- /.box -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </section>
+    <!-- /.content -->
+</div>
+
+
+{% include 'base/base_js.html' %}
+
+<!-- page script -->
+
+<script type="text/javascript">
+
+    function get_select_obj() {
+        var data = null;
+        var tr = $("#objTable").dataTable().$('tr.selected');
+        if (tr && tr.length > 0) {
+            data = tr[0].childNodes;
+        }
+        return data;
+    }
+
+
+    $(document).ready(function () {
+
+
+
+        //databale  显示中文
+        var lang = {
+            "sProcessing": "处理中...",
+            "sLengthMenu": "每页 _MENU_ 项",
+            "sZeroRecords": "没有匹配结果",
+            "sInfo": "当前显示第 _START_ 至 _END_ 项，共 _TOTAL_ 项。",
+            "sInfoEmpty": "当前显示第 0 至 0 项，共 0 项",
+            "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+            "sInfoPostFix": "",
+            "sSearch": "搜索:",
+            "sUrl": "",
+            "sEmptyTable": "表中数据为空",
+            "sLoadingRecords": "载入中...",
+            "sInfoThousands": ",",
+            "oPaginate": {
+                "sFirst": "首页",
+                "sPrevious": "上页",
+                "sNext": "下页",
+                "sLast": "末页",
+                "sJump": "跳转"
+            },
+            "oAria": {
+                "sSortAscending": ": 以升序排列此列",
+                "sSortDescending": ": 以降序排列此列"
+            }
+        };
+
+        //初始化表格
+        var table = $("#objTable").dataTable({
+            language: lang,  //提示信息
+            lengthChange: true,
+            info: true,
+            autoWidth: false,  //禁用自动调整列宽
+            //stripeClasses: ["odd", "even"],  //为奇偶行加上样式，兼容不支持CSS伪类的场合
+            processing: true,  //隐藏加载提示,自行处理
+            serverSide: true,  //启用服务器端分页
+            searching: true,  //禁用原生搜索
+            searchDelay: 1000,  // 搜索延时
+            orderMulti: false,  //启用多列排序
+            order: [],  //取消默认排序查询,否则复选框一列会出现小箭头
+            renderer: "bootstrap",  //渲染样式：Bootstrap和jquery-ui
+            pagingType: "full_numbers",  //分页样式：simple,simple_numbers,full,full_numbers
+            lengthMenu: [[20, 10, 25, 50, 100, 200, 300, 400, 500, -1], [20, 10, 25, 50, 100, 200, 300, 400, 500, "All"]],
+
+            columnDefs:
+                {% block table-columnDefs %}
+                    [{ "targets": 'nosort',     "orderable": false    }]
+                {% endblock %}
+            ,
+            ajax: function (data, callback, settings) {
+                //封装请求参数
+                var param = {};
+                param.limit = data.length;//页面显示记录条数，在页面显示每页显示多少项的时候
+                param.start = data.start;//开始的记录序号
+                param.page = (data.start / data.length) + 1;//当前页码
+                param.search = data.search.value;
+                //console.log(data);
+                //console.log(param);
+                //ajax请求数据
+                $.ajax({
+                    type: "GET",
+                    url: "{{ table.list_url }}",
+                    cache: false,  //禁用缓存
+                    data: param,  //传入组装的参数
+                    dataType: "json",
+                    success: function (result) {
+                        //setTimeout仅为测试延迟效果
+                        setTimeout(function () {
+                            //封装返回数据
+                            var returnData = {};
+                            returnData.draw = data.draw;//这里直接自行返回了draw计数器,应该由后台返回
+                            returnData.recordsTotal = result.total;//返回数据全部记录
+                            returnData.recordsFiltered = result.total;//后台不实现过滤功能，每次查询均视作全部结果
+                            returnData.data = result.data;//返回的数据列表
+                            //console.log(returnData);
+
+                            //调用DataTables提供的callback方法，代表数据已封装完成并传回DataTables进行渲染
+                            //此时的数据需确保正确无误，异常判断应在执行此回调前自行处理完毕
+                            callback(returnData);
+                        }, 200);
+                    },
+                    error: function (a, b, c, d, e) {
+                        $.messager.popup("加载数据失败");
+                    }
+                });
+            },
+            //列表表头字段
+            columns: [
+                {% block table-columns-block %}
+                    {% for col in table.cols %}
+                        {"data": "{{ col }}"}{% if not forloop.last %},{% endif %}
+                    {% endfor %}
+                {% endblock %}
+
+            ]
+        }).api();
+
+        //选择行注入css的class对象
+        $('#objTable tbody').on('click', 'tr', function () {
+            {#            $(this).toggleClass('selected');#}
+            if ($(this).hasClass('selected')) {
+                return null;
+            }
+            else {
+                table.$('tr.selected').removeClass('selected');
+                $(this).addClass('selected');
+            }
+        });
+
+
+        // 点击编辑按钮，对第一个选择的项目进行编辑
+        $('#editbtn').click(function () {
+            var objs = table.rows('.selected').data();
+            id = -1;
+
+            if (objs.length > 0) {
+                id = objs[0].id;
+                url = '{{ table.update_url }}' + '?id=' + id;
+                load_content(url)
+            } else {
+                $.messager.popup("请先选择一个条目");
+            }
+        }); // end editbtn click
+
+        // 点击编辑按钮，对第一个选择的项目进行编辑
+        $('#addbtn').click(function () {
+            url = '{{ table.add_url }}';
+            load_content(url);
+        }); // end editbtn click
+
+        // 点击编辑按钮，对第一个选择的项目进行编辑
+        $('#copybtn').click(function () {
+            var objs = table.rows('.selected').data();
+            id = -1;
+
+            if (objs.length > 0) {
+                id = objs[0].id;
+                url = '{{ table.add_url }}' + '?id=' + id;
+                load_content(url)
+            } else {
+                $.messager.popup("请先选择一个条目");
+            }
+        });
+
+        /**
+         * 删除按钮操作
+         */
+        $('#delbtn').click(function () {
+            var objs = table.rows('.selected').data();
+            var obj = get_select_obj_data();
+            $.messager.confirm("删除", " 确认删除所选,共 " + objs.length + " 条?", function () {
+
+                //组织所有id
+                var ids = "";
+                for (var i = 0; i < objs.length; i++) {
+                    ids = ids + objs[i].id + ','
+                }
+                if (ids.length > 0) {
+                    ids = ids.substr(0, ids.length - 1);
+                }
+
+                // csrf 防止跨域注入,POST必须
+                $.ajaxSetup({
+                    data: {csrfmiddlewaretoken: '{{ csrf_token }}'}
+                });
+
+                // 开始远程删除数据
+                $.ajax({
+                    url: '{{ table.remove_url }}',
+                    type: 'POST',
+                    data: {id: obj.id},
+                    timeout: 3000,
+                    success: function (data, statu) {
+                        try {
+                            if (data.success) {
+                                table.rows('.selected').remove().draw(false);
+                            }
+                            $.messager.popup(data.msg);
+
+                        } catch (ex) {
+                            $.messager.popup("Failed to pase the json of data!");
+                        }
+                    },
+                    error: function (data) {
+                        console.log(data);
+                        $.messager.popup("Failed to complete this operation");
+                    }
+                }); // end $.ajax
+
+            }); // end confirm
+        }); // end delbtn clic
+
+
+
+        function get_select_obj_data() {
+            var data = null;
+            var table = $("#objTable").dataTable().api();
+            var tr = table.$('tr.selected');
+            if (tr && tr.length > 0) {
+                var row = table.row(tr);
+                data = row.data();
+            }
+            return data;
+        }
+    }); // end onready
+</script>
+
+{% block table-js-extends %}
+    <!-- helllooooo-->
+{% endblock %}
+
+</body>
+</html>

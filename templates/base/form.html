@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ table.title }}</title>
+    {#        {% include 'base/base_css.html' %}#}
+</head>
+<body class="hold-transition skin-blue  ">
+{% block table-content %}
+    <div class="container">
+        <div class="row clearfix">
+            <h3>  {{ table.title }} </h3>
+            <div class="col-md-12 column">
+                <form role="form" id="edit-form" method='POST'>
+                    {% csrf_token %}
+                    {% if table.id %}
+                        <div class="form-group">
+                            <input type="hidden" id="id" name="id" value="{{ table.id }}"/>
+                        </div>
+                    {% endif %}
+
+
+                    {% for field in table.obj_form %}
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">{{ field.label_tag }}</label>
+                            {{ field }}
+                            <div class="form-group has-error">
+                                <label class="control-label" for="inputError"> {{ field.errors }}</label>
+                            </div>
+
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-block btn-success">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{#{% include 'base/base_js.html' %}#}
+<br><br><br><br><br><br><br><br>
+<script type="text/javascript">
+    $(document).ready(function () {
+            {% if table.msg %}
+                $.messager.popup('{{ table.msg|addslashes }}');
+            {% endif %}
+
+            {% block table-content-id %}
+                var content_ajax = '.ajax-content';
+            {% endblock %}
+
+            function load_content_html(result, content) {
+                if (content) {
+                    $(content).html(result)
+                } else {
+                    $(content_ajax).html(result)
+                }
+            }
+
+            $(".datetime-input").datetimepicker({
+                //language:  'fr',
+                weekStart: 1,
+                todayBtn: 1,
+                autoclose: 1,
+                todayHighlight: 1,
+                startView: 2,
+                forceParse: 0,
+                showMeridian: 1
+            });
+            $("#edit-form select,input[type!='checkbox']").attr("class", 'form-control wide');
+            {#            $('select[multiple !="multiple" ]').niceSelect();#}
+            $('select').chosen();
+
+            $(function () {
+                //Flat red color scheme for iCheck
+                $('input[type="checkbox"]').iCheck({
+                    checkboxClass: 'icheckbox_flat-green',
+                    radioClass: 'icheckbox_flat-red'
+                });
+            });
+
+
+            $("#edit-form").submit(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    cache: true,
+                    type: "POST",
+                    url: "{{ table.submit_url }}",
+                    data: $('#edit-form').serialize(),
+                    async: false,
+                    error: function (request) {
+                        alert("Connection error:" + request.error);
+                    },
+                    success: function (data) {
+                        load_content_html(data);
+                    }
+                });
+            });
+
+        }
+    );
+
+</script>
+</body>
+</html>

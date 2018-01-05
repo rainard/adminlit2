@@ -1,0 +1,186 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{{ tpl_obj.title }}</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+    {% include 'base/base_css.html' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'home/home.css' %}">
+
+</head>
+<body class="hold-transition skin-black-light sidebar-mini   ">
+<div class="wrapper">
+    <!------------------------------------------------------------------------------------------顶部菜单栏 -->
+    <header class="main-header">
+
+        <!-- Logo -->
+        <a href="{% url 'home_index' %}" class="logo">
+            <span class="logo-mini"><b>G</b>o</span>
+            <span class="logo-lg"><b>We</b> Go</span>
+        </a>
+
+        <nav class="navbar navbar-static-top">
+            <!-- Sidebar toggle button-->
+            <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                <span class="sr-only">Toggle navigation</span>
+            </a>
+
+            <!-- Navbar Right Menu -->
+            <div class="navbar-custom-menu">
+                <ul class="nav navbar-nav">
+                    <!------------------------------- user  信息块-->
+                    {% block menu-user %}
+                        {% if tpl_obj.user %}
+                            <li class="dropdown user user-menu">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <span class="hidden-xs">Welcome {{ tpl_obj.user.first_name }} {{ tpl_obj.user.last_name }} </span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <!-- Menu Body -->
+                                    <li class="user-body">
+                                    </li>
+                                    <li class="user-footer">
+                                        <div class="pull-left">
+{#                                            <a href="#" class="btn btn-default btn-flat modify-password">修改密码</a>#}
+                                        </div>
+                                        <div class="pull-right">
+                                            <a href="{{ tpl_obj.logout_url }}" class="btn btn-default btn-flat">登出</a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+
+                        {% else %}
+                            <li class="dropdown user user-menu">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <span class="hidden-xs">Please Login</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <!-- Menu Body -->
+
+                                    <li class="user-body">
+                                        <div class="row">
+                                            <div class="col-xs-4 text-center">
+                                                <a href="{{ tpl_obj.login_url }}">Login</a>
+                                            </div>
+                                        </div>
+                                        <!-- /.row -->
+                                    </li>
+                                </ul>
+                            </li>
+                        {% endif %}
+
+                    {% endblock %}
+                    <!-- Control Sidebar Toggle Button -->
+                    <li>
+                        <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+                    </li>
+                </ul>
+            </div>
+
+        </nav>
+    </header>
+
+    <!------------------------------------------------------------------------------------------侧边栏 -->
+    <!-- Left side column. contains the logo and sidebar -->
+    <aside class="main-sidebar">
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+
+            <!-- sidebar menu: : style can be found in sidebar.less -->
+            <ul class="sidebar-menu" data-widget="tree">
+                <li class="header">MAIN NAVIGATION</li>
+                {% block sibdebar %}
+
+                    {% for app_group in tpl_obj.app_groups %}
+                        <li class="treeview">
+                            <a href="#">
+                                <i class="{{ app_group.i_class }}"></i> <span>{{ app_group.name }}</span>
+                                <span class="pull-right-container">  <i class="fa fa-angle-left pull-right"></i> </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                {% for app in app_group.apps %}
+                                    <li><a onclick="load_content('{{ app.url }}')" href='javascript:void(0)'><i
+                                            class="{{ app.i_class }}"></i> {{ app.name }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endfor %}
+
+
+
+                {% endblock %}
+            </ul>
+
+        </section>
+        <!-- /.sidebar -->
+    </aside>
+
+
+    <!--------------------------------------------------------------  内容  -->
+
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            {% block main-content-header %}
+
+            {% endblock %}
+        </section>
+
+        <!-- Main content -->
+
+        <section class="content main-content">
+            <div class="box-body">
+                {% block content-body %}
+                    <div class="ajax-content"></div>
+                {% endblock %}
+
+            </div>
+        </section>
+        <!-- /.content -->
+    </div>
+
+    <!------------------------------------------------------------------------------------------页脚 -->
+    <footer class="main-footer">
+        <div class="pull-right hidden-xs">
+            <b>Version</b> 0.0.1
+        </div>
+        <strong>Copyright &copy; 2017-2018 <a href="http://www.platenogroup.com">Go DevOps</a>.</strong> All
+        rights
+        reserved.
+    </footer>
+</div>
+
+{# ===================================  显示修改密码 #}
+<div id="loginwrap">
+    <form id="loginform" role="form">
+        <div class="form-group">
+            <label for="password">原始密码</label>
+            <input type="password" required name="password" maxlength="30" minlength="6" class="form-control"
+                   id="password1">
+        </div>
+        <div class="form-group">
+            <label for="password1">修改密码</label>
+            <input type="password" required maxlength="30" minlength="6" name="password1" class="form-control"
+                   id="password1">
+        </div>
+        <div class="form-group">
+            <label for="password2">确认密码</label>
+            <input type="password" required maxlength="30" minlength="6" name="password2" class="form-control"
+                   id="password2">
+        </div>
+    </form>
+</div>
+
+{#  =================================== loading #}
+
+
+{% include 'base/base_js.html' %}
+<script src="{% static 'home/home.js' %}"></script>
+
+</body>
+</html>
