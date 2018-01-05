@@ -1,8 +1,9 @@
 - 这是一个基于django，adminlte2，datatable的管理后台，实现了CURD功能
 - 仅需要添加一个model，modelform，再加一条代码，就可以马上实现表格的CURD功能，简单功能强大
 
-！[权限编辑](./screenshorts/serverroom.png)
-
+![查看用户组](./screenshorts/usergroup.png)
+![查看用户组](./screenshorts/usergroup_edit.png)
+![查看用户组](./screenshorts/permission_edit.png)
 ---
 
 - 实现的方式类似
