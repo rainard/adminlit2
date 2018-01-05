@@ -6,8 +6,7 @@
 ![查看用户组](./screenshorts/usergroup_edit.png)
 ![查看用户组](./screenshorts/permission_edit.png)
 =======
-![权限编辑](./screenshorts/serverroom.png)
->>>>>>> ade7f33d81f7cb43703f54d71ad9f9e858518d7b
+![权限编辑](./screenshorts/serverroom.png) 
 ---
 
 - 实现的方式类似
