@@ -1,12 +1,9 @@
 - 这是一个基于django，adminlte2，datatable的管理后台，实现了CURD功能
 - 仅需要添加一个model，modelform，再加一条代码，就可以马上实现表格的CURD功能，简单功能强大
-<<<<<<< HEAD
 
 ![查看用户组](./screenshorts/usergroup.png)
 ![查看用户组](./screenshorts/usergroup_edit.png)
 ![查看用户组](./screenshorts/permission_edit.png)
-=======
-![权限编辑](./screenshorts/serverroom.png) 
 ---
 
 - 实现的方式类似
@@ -36,6 +33,7 @@
 
 
  4. 现在可以加入应用到setting.py中
+ 
  		```python
 		INSTALLED_APPS = [
 		    'django.contrib.staticfiles',
@@ -46,12 +44,33 @@
 		```
  
  5. 在urls.py中添加
- 	from server import views as server_views
-	urlpatterns = urlpatterns + server_views.urls()
+ 		```
+ 		from server import views as server_views
+		urlpatterns = urlpatterns + server_views.urls()
 
+		```
  5. python manager.py makemigrations 
  6. python manager.py migrate
  7. 启动项目
 
  9. 在权限中添加一个项目，链接写 server/serverroom.html,并给用户组添加一个权限
  10.  ok这就完成了
+
+- 相关插件包
+
+	```
+		Django (1.11.9)
+		django-redis (4.8.0)
+		mysqlclient (1.3.12)
+		pip (9.0.1)
+		pytz (2017.3)
+		redis (2.10.6)
+		setuptools (28.8.0)
+
+	```
+
+-  需要的额外软件支持
+
+	```
+		mysql ,redis
+	```
