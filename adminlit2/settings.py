@@ -34,9 +34,8 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.staticfiles',
-    'home.apps.HomeConfig',
+    'home',
     'auth',
-    'server',
 ]
 
 MIDDLEWARE = [
@@ -45,6 +44,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'config.middleware.auth.UserAuthMiddleware',
 ]
 
 ROOT_URLCONF = 'adminlit2.urls'
@@ -106,24 +106,27 @@ CACHES = {
     }
 }
 
+SESSION_COOKIE_AGE=24 * 60 * 60
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
+# AUTH_PASSWORD_VALIDATORS = [
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+#     },
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+#     },
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+#     },
+#     {
+#         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+#     },
+# ]
 
 
 # Internationalization
@@ -232,9 +235,9 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
-        'go.project': {
+        'project': {
             'handlers': ['console'],
-            'level': 'INFO',
+                'level': 'DEBUG',
             'propagate': True,
         },
         'apscheduler': {

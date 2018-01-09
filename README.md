@@ -3,6 +3,7 @@
 
 ![查看用户组](./screenshorts/usergroup.png)
 ![查看用户组](./screenshorts/usergroup_edit.png)
+![查看用户组](./screenshorts/permission.png)
 ![查看用户组](./screenshorts/permission_edit.png)
 ---
 
@@ -62,8 +63,6 @@
 		Django (1.11.9)
 		django-redis (4.8.0)
 		mysqlclient (1.3.12)
-		pip (9.0.1)
-		pytz (2017.3)
 		redis (2.10.6)
 		setuptools (28.8.0)
 

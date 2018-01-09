@@ -12,7 +12,7 @@ def md5(src):
     m2.update( value.encode( 'utf-8' ) )
     return m2.hexdigest()
 
-def time_to_str(datetime_obj):
+def time_to_str(datetime_obj=None):
     import time
     if datetime_obj:
         return time.strftime( '%Y-%m-%d %H:%M:%S', datetime_obj )
@@ -21,12 +21,17 @@ def time_to_str(datetime_obj):
 
 
 def decode_session(key):
-    return md5( key + time_to_str( None ) )
+    return md5( key + time_to_str(  ) )
 
-def cache_user_session(user,timeout=1296000):
-    from django.core.cache import cache
-    username = user.username
-    session = decode_session(username + user.password )
-    cache.set(session,username,timeout=timeout)
-    cache.set(username,user,timeout=timeout)
-    return session
+def querydict_to_str(query_dict):
+    result = ""
+    for key in query_dict :
+        if key == 'csrfmiddlewaretoken' :
+            continue
+        result = "{0}={1}<br>{2}".format(key,query_dict.get(key),result)
+
+    return result
+
+
+
+

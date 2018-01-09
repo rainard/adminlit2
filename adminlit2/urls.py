@@ -16,11 +16,9 @@ Including another URLconf
 from django.conf.urls import url
 from home import views as home_views
 from auth import views as auth_views
-from server import views as server_views
 urlpatterns = [
     # url(r'^admin/', admin.site.urls),
 ]
 
 urlpatterns = urlpatterns + home_views.urls()
 urlpatterns = urlpatterns + auth_views.urls()
-urlpatterns = urlpatterns + server_views.urls()

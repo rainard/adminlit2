@@ -40,4 +40,7 @@ class LoginForm(forms.Form):
     remember = forms.BooleanField(required=False)
 
 
-
+class OperLogsForm(forms.ModelForm):
+    class Meta:
+        model = OperLogs
+        fields = '__all__'

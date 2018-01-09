@@ -3,6 +3,9 @@ from django.shortcuts import reverse
 from django.conf.urls import url
 from django import http
 from django.core.cache import cache
+import logging
+
+logger = logging.getLogger( "project" )
 
 def urls():
     urlpatterns = [
@@ -57,20 +60,22 @@ def menu(data):
 
 
 def index(request):
+    user_obj = request.session.get( 'user',None )
 
-    session = request.COOKIES.get('session',None)
     login_url = reverse('auth_login')
 
-    if not session :
+    if not user_obj :
         return http.HttpResponseRedirect(login_url)
-
-    username = cache.get( session )
-    user_obj = cache.get(username)
 
     if not user_obj :
         return http.HttpResponseRedirect( login_url )
 
-    permissions = user_obj.usergroup.permis.all()
+    permissions = None
+    if user_obj.is_superuser :
+        from auth.models import Permission
+        permissions = Permission.objects.all()
+    else :
+        permissions = user_obj.usergroup.permis.all()
 
     group_list = menu( permissions )
     tpl_index_table = IndexTable( u'WeHotel DevOps', group_list, None )
@@ -81,9 +86,12 @@ def index(request):
     return render( request, 'home/index.html', {"tpl_obj": tpl_index_table} )
 
 def logout(request):
-    session = request.COOKIES.get('session')
-    username = cache.get(session)
-    cache.set(username,None,timeout=1)
-    cache.set(session,None,timeout=1)
+
+    session = request.session
+
+    if 'user' in session.keys():
+        del request.session['user']
+
     login_url = reverse( 'auth_login' )
     return http.HttpResponseRedirect(login_url)
+

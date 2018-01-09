@@ -24,7 +24,6 @@ def model_to_dict(instance, fields=None, exclude=None):
     fields will be excluded from the returned dict, even if they are listed in
     the ``fields`` argument.
     """
-    import pprint
     from django.db import models
     opts = instance._meta
     data = {}

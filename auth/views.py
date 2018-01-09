@@ -11,6 +11,7 @@ BASE_URLS = [ ]
 BASE_URLS =  BASE_URLS + curd.create_crud(Permission,PermissionForm,'permission','auth/permission',u'权限')
 BASE_URLS =  BASE_URLS + curd.create_crud(User,UserForm,'user','auth/user',u'用户')
 BASE_URLS =  BASE_URLS + curd.create_crud(UserGroup,UserGroupForm,'usergroup','auth/usergroup',u'用户组')
+BASE_URLS =  BASE_URLS + curd.create_crud(OperLogs,OperLogsForm,'logs','auth/logs',u'日志')
 
 def urls():
     all_urls = BASE_URLS + [
@@ -38,12 +39,25 @@ def login_action(request):
             obj = User.objects.filter(password=md5_password,username=username).last()
             obj.last_login = utils.now()
             obj.save()
-            session = utils.cache_user_session(obj)
+            request.session['user'] = obj
+
+            permis = obj.usergroup.permis.all()
+
+            urls = []
+
+            for perm  in permis :
+                url = perm.url
+                urls.append(url[0:url.rfind('.')])
+                request.session['urls'] = urls + ['']
+
             response = http.HttpResponseRedirect( reverse( 'home_index' ) )
-            response.set_cookie('session',session,1296000)
         except Exception as ex :
             response = login_html(request,msg=u'登录失败，错误的用户或密码')
 
     return response
 
+
+from django.db.models import QuerySet
+
+dset = QuerySet()
 

@@ -1,3 +1,3 @@
 git add .
-git commit -m 'test'
+git commit -m '1.0'
 git push
